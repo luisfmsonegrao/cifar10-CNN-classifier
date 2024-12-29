@@ -1,7 +1,7 @@
 from torch import nn
 import torch
 
-class MyConvNN(nn.Module):
+class SmallCNN(nn.Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()

@@ -14,7 +14,7 @@ file_path = os.path.dirname(os.path.abspath('.'))
 sys.path.append(file_path)
 
 from src.CIFAR10dataset import CIFAR10dataset
-from src.MyConvNN import MyConvNN
+from src.SmallCNN import SmallCNN
 
 # DEFINE TRANSFORMS
 mean = [0.4914,0.4822,0.4465]
@@ -49,7 +49,7 @@ show_image(im1[0])
 
 # DEFINE MODEL, OPTIMIZER, LOSS FUNCTION, DEVICE
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-mo1 = MyConvNN().to(device)
+mo1 = SmallCNN().to(device)
 opt1 = optim.SGD(mo1.parameters(),lr=0.01)
 loss_fn = torch.nn.CrossEntropyLoss()
 
@@ -164,11 +164,11 @@ torch.save(mo1.state_dict(),'..\models\cifar_model_v1_sd.pt')
 
 
 # LOAD STATE DICT
-mo2 = MyConvNN()
+mo2 = SmallCNN()
 mo2.load_state_dict(torch.load('..\models\cifar_model_v1_sd.pt',weights_only=True))
 
 # LOAD BEST MODEL
-mo4 = MyConvNN()
+mo4 = SmallCNN()
 opt4 = torch.optim.SGD(mo4.parameters(),lr=0.01)
 sd = torch.load('..\models\cifar_model_v1_it20.pt',weights_only=True)
 mo4.load_state_dict(sd['model_state_dict'])
