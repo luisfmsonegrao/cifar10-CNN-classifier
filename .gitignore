@@ -2,3 +2,4 @@ scripts/*
 notebooks/*
 data/*
 models/*.pt
+*/__pycache__
