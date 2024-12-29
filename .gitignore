@@ -1,0 +1,4 @@
+scripts/*
+notebooks/*
+data/*
+models/*.pt

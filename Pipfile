@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+torch = "*"
+torchvision = "*"
+numpy = "*"
+waitress = "*"
+nvidia-cublas-cu12 = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
