@@ -1,0 +1,1 @@
+docker build -t cifar10-classifier:latest -f src/Dockerfile .

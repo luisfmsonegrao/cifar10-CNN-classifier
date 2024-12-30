@@ -1,4 +1,3 @@
-scripts/*
 data/*
 trained_models/*.pt
 */__pycache__
