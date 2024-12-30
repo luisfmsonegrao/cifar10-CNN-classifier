@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import numpy as np
 import torch
 from torch import optim
@@ -10,16 +9,16 @@ import matplotlib.pyplot as plt
 import pickle
 from torchvision.models.resnet import resnet50, ResNet50_Weights
 
+
 file_path = os.path.dirname(os.path.abspath('.'))
 sys.path.append(file_path)
+from datasets.CIFAR10dataset import CIFAR10dataset
+from models.SmallCNN import SmallCNN
 
-from src.CIFAR10dataset import CIFAR10dataset
-from src.SmallCNN import SmallCNN
-
-# DEFINE TRANSFORMS
-mean = [0.4914,0.4822,0.4465]
-stdev = [0.2470,0.2435,0.2616]
-tf = transforms.Compose([transforms.ToTensor(),transforms.Normalize(mean,stdev)])
+# DEFINE IMAGE TRANSFORMS
+cifar_mean = [0.4914,0.4822,0.4465]
+cifar_stdev = [0.2470,0.2435,0.2616]
+tf = transforms.Compose([transforms.ToTensor(),transforms.Normalize(cifar_mean,cifar_stdev)])
 tgt_tf = Lambda(lambda y: torch.zeros(10, dtype=torch.float).scatter_(dim=0, index=torch.tensor(y), value=1))
 
 # LOAD CIFAR10 DATASET
@@ -29,17 +28,16 @@ gen1 = torch.Generator().manual_seed(1)
 train_frac = 0.9
 val_frac = 1 - train_frac
 train_ds, val_ds = torch.utils.data.random_split(train_val_ds,[train_frac,val_frac],generator=gen1)
-
 train_dl = torch.utils.data.DataLoader(train_ds, batch_size=64, shuffle=True)
 val_dl = torch.utils.data.DataLoader(val_ds,batch_size=64,shuffle=False)
 test_dl = torch.utils.data.DataLoader(test_ds, batch_size=64, shuffle=False)
 
 def show_image(im):
-    stdev = torch.tensor(stdev)
+    stdev = torch.tensor(cifar_stdev)
     stdev = stdev.reshape((3,1,1))
-    avg = torch.tensor(mean)
-    avg = avg.reshape((3,1,1))
-    im = im*stdev+avg
+    mean = torch.tensor(cifar_mean)
+    mean = mean.reshape((3,1,1))
+    im = im*stdev+mean
     im = torch.permute(im,(1,2,0))
     plt.imshow(im)
     plt.show()
@@ -50,7 +48,7 @@ show_image(im1[0])
 # DEFINE MODEL, OPTIMIZER, LOSS FUNCTION, DEVICE
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 mo1 = SmallCNN().to(device)
-opt1 = optim.SGD(mo1.parameters(),lr=0.01)
+opt1 = optim.SGD(mo1.parameters(),lr=0.005)
 loss_fn = torch.nn.CrossEntropyLoss()
 
 # DEFINE TRAINING LOOP
@@ -69,7 +67,6 @@ def train_model(model,train_data,val_data,optimizer,loss_fn,epochs=1):
             label = label.to(device)
             vals,lbl_classes = label.max(dim=1)
             pred = model(example)
-            pred = torch.nn.Softmax(pred)
             vals, prd_classes = pred.max(dim=1)
             loss = loss_fn(pred,label)
             loss.backward()
@@ -86,7 +83,6 @@ def train_model(model,train_data,val_data,optimizer,loss_fn,epochs=1):
                 label = label.to(device)
                 vals,lbl_classes = label.max(dim=1)
                 pred = model(example)
-                pred = torch.nn.Softmax(pred)
                 vals,prd_classes = pred.max(dim=1)
                 loss = loss_fn(pred,label)
                 cum_val_loss += loss/n_val_samples
@@ -105,13 +101,37 @@ def train_model(model,train_data,val_data,optimizer,loss_fn,epochs=1):
                             'optimizer_state_dict':optimizer.state_dict(),
                             'loss':cum_val_loss,
                             'acc':val_acc},
-                           f'..\models\cifar_model_v1_it{e}.pt')
-            
+                           f'..\trained_models\cifar_model_v1_it{e}.pt')
+                 
+# DEFINE EVALUATION LOOP
+def eval_model(model,test_data,loss_fn):
+    model.eval()
+    cum_test_loss = 0
+    test_acc = 0
+    n_samples = len(test_data.dataset)
+    with torch.no_grad():
+        for i,(example,label) in enumerate(test_data):
+            example = example.to(device)
+            label = label.to(device)
+            pred = model(example)
+            loss = loss_fn(pred,label)
+            cum_test_loss += loss
+            vals,lbl_classes = label.max(dim=1)
+            vals,pred_classes = pred.max(dim=1)
+            test_acc += sum(pred_classes==lbl_classes)
+        cum_test_loss = cum_test_loss/n_samples
+        test_acc = test_acc/n_samples
+        info_str = f'Test loss: {cum_test_loss:.4f} \n test accuracy: {test_acc:.4f}'
+        print(info_str)    
+
+
 # TRAIN MODEL
-train_model(mo1,train_dl,val_dl,opt1,loss_fn,epochs=10)
+train_model(mo1,train_dl,val_dl,opt1,loss_fn,epochs=20)
+
 
 # LOAD PRETRAINED RESNET50 NN AND TUNE TO CIFAR10 CLASSIFICATION TASK
 ref_mo = resnet50(weights=ResNet50_Weights.IMAGENET1K_V1)
+
 for p in ref_mo.parameters():
     p.requires_grad = False
 
@@ -125,57 +145,30 @@ ref_mo.fc = torch.nn.Sequential(
     torch.nn.ReLU(),
     torch.nn.Linear(in_features=32,out_features=10,bias=True)
 )
+
 ref_mo = ref_mo.to(device)
 ref_opt = torch.optim.SGD(ref_mo.parameters(),lr=0.01)
 ref_loss = torch.nn.CrossEntropyLoss()
+
+# TRAIN RESNET50 OUTPUT LAYERS
 train_model(ref_mo,train_dl,val_dl,ref_opt,ref_loss,epochs=10)
 
-def eval_model(model,test_data,loss_fn):
-    model.eval()
-    cum_test_loss = 0
-    test_acc = 0
-    n_samples = len(test_data.dataset)
-    with torch.no_grad():
-        for i,(example,label) in enumerate(test_data):
-            example = example.to(device)
-            label = label.to(device)
-            pred = model(example)
-            pred = torch.nn.Softmax(pred)
-            loss = loss_fn(pred,label)
-            cum_test_loss += loss
-            vals,lbl_classes = label.max(dim=1)
-            vals,pred_classes = pred.max(dim=1)
-            test_acc += sum(pred_classes==lbl_classes)
-        cum_test_loss = cum_test_loss/n_samples
-        test_acc = test_acc/n_samples
-        info_str = f'Test loss: {cum_test_loss:.4f} \n test accuracy: {test_acc:.4f}'
-        print(info_str)
-
-# EVALUATE MODEL PERFORMANCE ON TEST SET
-eval_model(mo1,test_dl,ref_loss)
-
+# LOAD BEST MODEL AND SAVE WITH PICKLE
+mo = SmallCNN()
+checkpoint = torch.load("../trained_models/cifar_model_v1_it18.pt",weights_only=True)
+mo.load_state_dict(checkpoint['model_state_dict'])
+mo.eval()
+device = torch.device("cpu")
+mo.to(device)
+output_file = 'cifar_model_cpu_v1.bin'
+with open(output_file,'wb') as f_out:
+    pickle.dump((tf,mo),f_out)
 
 # EVALUATE MODIFIED RESNET50 PERFORMANCE ON TEST SET
 eval_model(ref_mo,test_dl,ref_loss)
 
+# EVALUATE BEST MODEL
+eval_model(mo,test_dl,loss_fn)
 
-# SAVE MODEL STATE DICT
-torch.save(mo1.state_dict(),'..\models\cifar_model_v1_sd.pt')
 
 
-# LOAD STATE DICT
-mo2 = SmallCNN()
-mo2.load_state_dict(torch.load('..\models\cifar_model_v1_sd.pt',weights_only=True))
-
-# LOAD BEST MODEL
-mo4 = SmallCNN()
-opt4 = torch.optim.SGD(mo4.parameters(),lr=0.01)
-sd = torch.load('..\models\cifar_model_v1_it20.pt',weights_only=True)
-mo4.load_state_dict(sd['model_state_dict'])
-opt4.load_state_dict(sd['optimizer_state_dict'])
-
-# SAVE MODEL WITH PICKLE
-output_file = 'cifar_model_v1.bin'
-
-with open(output_file,'wb') as f_out:
-    pickle.dump((tf,mo4),f_out)

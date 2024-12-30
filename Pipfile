@@ -3,14 +3,17 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
+[[source]]
+url = "https://download.pytorch.org/whl/cpu"
+verify_ssl = true
+name = "downloadpytorch"
+
 [packages]
 flask = "*"
-torch = "*"
-torchvision = "*"
 numpy = "*"
 waitress = "*"
-nvidia-cublas-cu12 = "*"
-nvidia-cudnn-cu12 = "*"
+torch = {version = "*", index = "downloadpytorch"}
+torchvision = {version = "*", index = "downloadpytorch"}
 
 [dev-packages]
 

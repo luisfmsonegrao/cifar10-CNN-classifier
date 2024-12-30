@@ -20,7 +20,6 @@ class SmallCNN(nn.Module):
         self.lin2 = nn.Linear(64,32,bias=True)
         self.bn5 = nn.BatchNorm1d(32)
         self.lin3 = nn.Linear(32,10,bias=True)
-        self.softmax = nn.Softmax()
 
     def forward(self,x):
         out = self.dropout(x)
