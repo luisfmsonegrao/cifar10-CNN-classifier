@@ -14,10 +14,11 @@ from torch import permute
 test_ds = CIFAR10dataset(root='../data/',train=False,transform=transforms.ToTensor(),target_transform=None)
 test_dl = DataLoader(test_ds,batch_size=1,shuffle=False)
 
-host = 'localhost'
-port = '8080'
-entrypoint = 'predict'
-url = f'http://{host}:{port}/{entrypoint}'
+#host = 'localhost'
+#port = '8080'
+#entrypoint = 'predict'
+#rl = f'http://{host}:{port}/{entrypoint}'
+url = 'https://cifar10-classifier-678389556781.europe-west4.run.app/predict'
 
 test_it = iter(test_dl)
 for i in range(1,11):
