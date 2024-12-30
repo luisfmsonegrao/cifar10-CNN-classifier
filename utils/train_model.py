@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import pickle
 from torchvision.models.resnet import resnet50, ResNet50_Weights
 
+learning_rate = 0.005
+n_epochs = 20
 
 file_path = os.path.dirname(os.path.abspath('.'))
 sys.path.append(file_path)
@@ -48,7 +50,7 @@ show_image(im1[0])
 # DEFINE MODEL, OPTIMIZER, LOSS FUNCTION, DEVICE
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 mo1 = SmallCNN().to(device)
-opt1 = optim.SGD(mo1.parameters(),lr=0.005)
+opt1 = optim.SGD(mo1.parameters(),lr=learning_rate)
 loss_fn = torch.nn.CrossEntropyLoss()
 
 # DEFINE TRAINING LOOP
@@ -126,7 +128,7 @@ def eval_model(model,test_data,loss_fn):
 
 
 # TRAIN MODEL
-train_model(mo1,train_dl,val_dl,opt1,loss_fn,epochs=20)
+train_model(mo1,train_dl,val_dl,opt1,loss_fn,epochs=n_epochs)
 
 
 # LOAD PRETRAINED RESNET50 NN AND TUNE TO CIFAR10 CLASSIFICATION TASK
@@ -147,11 +149,11 @@ ref_mo.fc = torch.nn.Sequential(
 )
 
 ref_mo = ref_mo.to(device)
-ref_opt = torch.optim.SGD(ref_mo.parameters(),lr=0.01)
+ref_opt = torch.optim.SGD(ref_mo.parameters(),lr=learning_rate)
 ref_loss = torch.nn.CrossEntropyLoss()
 
 # TRAIN RESNET50 OUTPUT LAYERS
-train_model(ref_mo,train_dl,val_dl,ref_opt,ref_loss,epochs=10)
+train_model(ref_mo,train_dl,val_dl,ref_opt,ref_loss,epochs=n_epochs)
 
 # LOAD BEST MODEL AND SAVE WITH PICKLE
 mo = SmallCNN()

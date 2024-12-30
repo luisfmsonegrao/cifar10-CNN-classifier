@@ -3,7 +3,6 @@ from torch.utils.data import DataLoader
 import numpy as np
 import requests
 import os, sys
-from matplotlib import pyplot as plt
 
 file_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(file_path)
@@ -17,7 +16,7 @@ test_dl = DataLoader(test_ds,batch_size=1,shuffle=False)
 #host = 'localhost'
 #port = '8080'
 #entrypoint = 'predict'
-#rl = f'http://{host}:{port}/{entrypoint}'
+#url = f'http://{host}:{port}/{entrypoint}'
 url = 'https://cifar10-classifier-678389556781.europe-west4.run.app/predict'
 
 test_it = iter(test_dl)
