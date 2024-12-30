@@ -1,0 +1,1 @@
+torchserve --start --ts-config .\..\config.properties --disable-token-auth --ncs --model-store .\..\model-store --models cifar10=cifar10-classifier.mar

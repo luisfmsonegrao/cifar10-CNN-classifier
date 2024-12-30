@@ -1,3 +1,4 @@
 data/*
 trained_models/*.pt
 */__pycache__
+logs/*
