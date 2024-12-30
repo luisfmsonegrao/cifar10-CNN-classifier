@@ -13,8 +13,13 @@ file_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(file_path)
 print(file_path)
 
-#input_file = file_path+'\\models\\cifar_model_v1.bin'
-input_file = file_path+'\\cifar_model_v1.bin'
+host_name = os.getenv("HOST_NAME")
+
+if host_name == "REMOTE CONTAINER":
+    input_file = file_path+'\\cifar_model_v1.bin'
+else:
+    input_file = file_path+'\\models\\cifar_model_v1.bin'
+    
 with open(input_file,'rb') as f_in:
     transform, model = pickle.load(f_in)
 

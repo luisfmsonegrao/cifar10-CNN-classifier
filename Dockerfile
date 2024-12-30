@@ -2,6 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV HOST_NAME = "REMOTE CONTAINER"
+
 RUN pip install pipenv
 
 COPY ["Pipfile","Pipfile.lock","./"]
