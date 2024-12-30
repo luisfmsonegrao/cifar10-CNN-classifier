@@ -10,6 +10,7 @@ torchvision = "*"
 numpy = "*"
 waitress = "*"
 nvidia-cublas-cu12 = "*"
+nvidia-cudnn-cu12 = "*"
 
 [dev-packages]
 
