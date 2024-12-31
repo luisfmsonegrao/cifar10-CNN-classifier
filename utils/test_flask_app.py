@@ -3,7 +3,6 @@ from torch.utils.data import DataLoader
 import numpy as np
 import requests
 import os, sys
-import json
 
 file_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.append(file_path)

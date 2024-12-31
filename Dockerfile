@@ -8,7 +8,7 @@ RUN pip install pipenv
 
 COPY ["Pipfile","Pipfile.lock","./"]
 
-RUN pipenv install --system --deploy
+RUN pipenv install --system --deploy --categories flask-app
 
 COPY ["app/cifar10_app.py","./"]
 COPY ["trained_models/cifar_model_cpu_v1.bin","./"]

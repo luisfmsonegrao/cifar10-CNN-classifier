@@ -8,14 +8,33 @@ url = "https://download.pytorch.org/whl/cpu"
 verify_ssl = true
 name = "downloadpytorch"
 
+[[source]]
+url = "https://download.pytorch.org/whl/cu124"
+verify_ssl = true
+name = "downloadpytorch-767"
+
 [packages]
-flask = "*"
+torch = {version = "*", index = "downloadpytorch-767"}
+torchvision = {version = "*", index = "downloadpytorch-767"}
+requests = "*"
+matplotlib = "*"
 numpy = "*"
-waitress = "*"
-torch = {version = "*", index = "downloadpytorch"}
-torchvision = {version = "*", index = "downloadpytorch"}
 
 [dev-packages]
 
 [requires]
 python_version = "3.12"
+
+[flask-app]
+flask = "*"
+numpy = "*"
+waitress = "*"
+torch = {version = "==2.5.1", index = "downloadpytorch"}
+torchvision = {version = "==0.20.1", index = "downloadpytorch"}
+
+[torchserve-app]
+torchserve = "*"
+torch-model-archiver = "*"
+torch-workflow-archiver = "*"
+torchvision = {version = "==0.20.1", index = "downloadpytorch"}
+torch = {version = "==2.5.1", index = "downloadpytorch"}
