@@ -1,0 +1,1 @@
+docker run -it --rm -p 9696:8080 cifar10-classifier:torchserve

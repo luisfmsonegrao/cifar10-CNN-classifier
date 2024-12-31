@@ -1,4 +1,5 @@
 from ts.torch_handler.image_classifier import ImageClassifier
+from ts.utils.util import map_class_to_label
 from torchvision import transforms
 import numpy as np
 import json
@@ -22,3 +23,5 @@ class CIFAR10Handler(ImageClassifier):
         input_tensor = input_tensor.to(device='cpu',dtype=torch.float)
         input_tensor = self.image_processing(input_tensor)
         return input_tensor
+    
+
