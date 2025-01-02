@@ -18,7 +18,7 @@ Alternatively, the images can be pushed to GCP Artifact Registry and run as remo
  [GCP Artifact Registry](https://cloud.google.com/artifact-registry/docs) documentation for more information
 
 ## Inference
-Once you have a running docker container, *'test_flask_app.py'* and *'test_torchserve_model.py'* can be used to perform inference on samples from the CIFAR10 dataset.
+Once you have a running docker container, *'test_flask_app.py'* and *'test_torchserve_model.py'* from the *utils* folder can be used to perform inference on samples from the CIFAR10 dataset.
 
 
 
