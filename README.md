@@ -14,7 +14,7 @@ The *trained_model.py* script inside the utils folder provides an example of how
 This repository provides two docker images that can be used to serve a trained instance of the SmallCNN model as a Flask app and as a torchserve server, respectively.
 The images can be built by running the command line scripts *'build_flask_app_image.cmd'* and *'build_torchserve_image.cmd'* from within the *scripts* folder.
 Containers based on these images can be started in your local machine by running *'run_flask_app_container.cmd'* and *'run_torchserve_container.cmd'* stored in the *scripts* folder.
-Alternatively, the images can be pushed to GCP Artifact Registry and run as remote containers. The *scripts* folder contains examples of how to push the images to the Artifact registry. Please refer to the 
+Alternatively, the images can be pushed to GCP Artifact Registry and run as remote containers. The *scripts* folder contains examples of how to push the images to the Artifact Registry. Please refer to the 
  [GCP Artifact Registry](https://cloud.google.com/artifact-registry/docs) documentation for more information
 
 ## Inference
