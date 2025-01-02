@@ -1,1 +1,1 @@
-docker build -t cifar10-classifier:latest .\..\
+docker build -t cifar10-classifier:latest -f .\..\flask.dockerfile .\..\
