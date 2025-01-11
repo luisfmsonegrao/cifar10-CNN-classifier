@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  cifar10-app:
+    image: cifar10-classifier-torchserve:latest
+  gateway:
+    image: cifar10-gateway-app-torchserve:latest
+    environment:
+      - MODEL_SERVING_HOST=http://cifar10-app:8080/predictions/cifar10-classifier
+    ports:
+      - "80:80"

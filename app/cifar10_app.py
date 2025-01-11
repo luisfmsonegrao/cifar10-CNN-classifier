@@ -7,9 +7,8 @@ from torchvision import transforms
 import os,sys
 import numpy as np
 
-host_name = os.getenv("HOST_NAME")
-file_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-sys.path.append(file_path)
+root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(root_path)
 
 host_name = os.getenv("HOST_NAME")
 if host_name == "REMOTE CONTAINER":
@@ -17,7 +16,7 @@ if host_name == "REMOTE CONTAINER":
     input_file = '/app/cifar_model_cpu_v1.bin'
 else:
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-    input_file = file_path+'\\models\\cifar_model_v1.bin'
+    input_file = root_path+'\\models\\cifar_model_v1.bin'
 
 with open(input_file,'rb') as f_in:
     transform, model = pickle.load(f_in)
@@ -44,16 +43,18 @@ softmax = torch.nn.Softmax(dim=1)
 
 @app.route('/predict',methods=['POST'])
 def predict_endpoint():
+    print("model app")
     im = request.get_json()
     im = np.array(im)
     im = torch.tensor(im)
     im = im.to(device = device,dtype = torch.float)
-    im = transform(im)
+    #im = transform(im)
     pred = model(im)
     pred = softmax(pred)
     pred_list = pred.tolist()
     pred_list = [round(el,3) for el in pred_list[0]]
     result = dict(zip(categories,pred_list))
+    print(result)
     return jsonify(result)
 
 if __name__ == '__main__':

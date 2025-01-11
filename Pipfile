@@ -38,3 +38,11 @@ torch-model-archiver = "*"
 torch-workflow-archiver = "*"
 torchvision = {version = "==0.20.1", index = "downloadpytorch"}
 torch = {version = "==2.5.1", index = "downloadpytorch"}
+
+[gateway-app]
+numpy = "*"
+flask = "*"
+torch = {version = "==2.5.1", index = "downloadpytorch"}
+torchvision = {version = "==0.20.1", index = "downloadpytorch"}
+waitress = "*"
+requests = "*"

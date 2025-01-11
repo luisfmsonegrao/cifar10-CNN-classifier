@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  cifar10-app:
+    image: cifar10-classifier:latest
+  gateway:
+    image: cifar10-gateway-app:latest
+    environment:
+      - MODEL_SERVING_HOST=http://cifar10-app:9696/predict
+    ports:
+      - "80:80"
