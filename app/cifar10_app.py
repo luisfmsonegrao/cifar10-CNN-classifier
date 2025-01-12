@@ -40,10 +40,10 @@ categories = ['airplane',
  'truck']
 
 softmax = torch.nn.Softmax(dim=1)
-
+app = Flask('CIFAR')
 @app.route('/predict',methods=['POST'])
 def predict_endpoint():
-    print("model app")
+    #print("model app")
     im = request.get_json()
     im = np.array(im)
     im = torch.tensor(im)
@@ -54,7 +54,7 @@ def predict_endpoint():
     pred_list = pred.tolist()
     pred_list = [round(el,3) for el in pred_list[0]]
     result = dict(zip(categories,pred_list))
-    print(result)
+
     return jsonify(result)
 
 if __name__ == '__main__':
