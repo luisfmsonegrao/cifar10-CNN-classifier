@@ -1,0 +1,1 @@
+gcloud container clusters get-credentials cifar-cluster --region=europe-west4-b

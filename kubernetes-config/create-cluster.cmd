@@ -1,0 +1,1 @@
+gcloud container clusters create cifar-cluster --region europe-west4-b --num-nodes 1 --machine-type e2-standard-2 --network default --subnetwork default

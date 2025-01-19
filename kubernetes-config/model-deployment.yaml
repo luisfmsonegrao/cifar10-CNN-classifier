@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: model-pod
-        image: cifar10-classifier-torchserve:v001
+        image: us-docker.pkg.dev/boxwood-mantra-442011-a2/gcr.io/cifar10-gateway-app-torchserve:1
         resources:
           limits:
             memory: "2.5Gi"

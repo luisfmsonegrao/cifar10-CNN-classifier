@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: gateway-pod
-        image: cifar10-gateway:v001
+        image: us-docker.pkg.dev/boxwood-mantra-442011-a2/gcr.io/cifar10-gateway-app:1
         resources:
           limits:
             memory: "512Mi"
