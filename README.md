@@ -2,9 +2,9 @@
 # Cifar10 CNN Classifier
 This project defines a simple, custom Convolutional Neural Network for image classification and trains it on the **CIFAR-10** dataset.
 It also provides tools to serve the trained model remotely (in *GCP*) in 3 different ways:
-    - Containerized Flask app
-    - Containerized Torchserve server
-    - Kubernetes containerized data-processing app + Torchserve server
+    * Containerized Flask app
+    * Containerized Torchserve server
+    * Kubernetes containerized data-processing app + Torchserve server
 
 
 ## Introduction
